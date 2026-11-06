@@ -56,11 +56,11 @@ env:
 
 jobs:
   build:
-    # 13.x/14.x sources: macos-14 still ships Xcode 15.x, whose iig matches the xnu-8796 IORPC ABI
-    # (Xcode 16's iig emits IORPC.kernelContent, which that xnu lacks).
+    # 13.x/14.x sources: GitHub retired macos-14 (Xcode 15), so they build on macos-15 with its oldest Xcode 16;
+    # Xcode 16's iig emits IORPC.kernelContent, which xnu-8796 gets from xnu/patches/0172 (as xnu-11215 has it).
     # 15.x sources (xnu-11215): macos-15 with Xcode 16.2 (the macOS 15.2/15.3 era toolchain).
     # 26.x sources (xnu-12377): macos-26 with Xcode 26.1 (what dxb's own CI builds 26.5 with).
-    runs-on: ${{ startsWith(inputs.macos_version || (github.ref_name == 'main' && '13.5' || (github.ref_name == 'ios26' && '26.5' || '15.3')), '26.') && 'macos-26' || (startsWith(inputs.macos_version || (github.ref_name == 'main' && '13.5' || '15.3'), '15.') && 'macos-15' || 'macos-14') }}
+    runs-on: ${{ startsWith(inputs.macos_version || (github.ref_name == 'main' && '13.5' || (github.ref_name == 'ios26' && '26.5' || '15.3')), '26.') && 'macos-26' || (startsWith(inputs.macos_version || (github.ref_name == 'main' && '13.5' || '15.3'), '15.') && 'macos-15' || 'macos-15') }}
     timeout-minutes: 120
     steps:
       - uses: actions/checkout@v4

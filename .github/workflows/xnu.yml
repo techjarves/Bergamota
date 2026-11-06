@@ -18,6 +18,9 @@ on:
       use_kdk:
         description: 26.x only - download the KDK (true) or build without it (false; CoreEntitlements V2 stubs, but TrustCache/API.h is KDK-only)
         default: "true"
+      runner:
+        description: force the runner label (empty = by macos_version), e.g. macos-26 when the macos-15 queue is long
+        default: ""
       keep_going:
         description: make -k (collect all compile errors in one run)
         default: "true"
@@ -60,7 +63,7 @@ jobs:
     # Xcode 16's iig emits IORPC.kernelContent, which xnu-8796 gets from xnu/patches/0172 (as xnu-11215 has it).
     # 15.x sources (xnu-11215): macos-15 with Xcode 16.2 (the macOS 15.2/15.3 era toolchain).
     # 26.x sources (xnu-12377): macos-26 with Xcode 26.1 (what dxb's own CI builds 26.5 with).
-    runs-on: ${{ startsWith(inputs.macos_version || (github.ref_name == 'main' && '13.5' || (github.ref_name == 'ios26' && '26.5' || '15.3')), '26.') && 'macos-26' || (startsWith(inputs.macos_version || (github.ref_name == 'main' && '13.5' || '15.3'), '15.') && 'macos-15' || 'macos-15') }}
+    runs-on: ${{ inputs.runner || (startsWith(inputs.macos_version || (github.ref_name == 'main' && '13.5' || (github.ref_name == 'ios26' && '26.5' || '15.3')), '26.') && 'macos-26' || (startsWith(inputs.macos_version || (github.ref_name == 'main' && '13.5' || '15.3'), '15.') && 'macos-15' || 'macos-15')) }}
     timeout-minutes: 120
     steps:
       - uses: actions/checkout@v4
